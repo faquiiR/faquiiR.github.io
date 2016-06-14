@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>laravel5.1源码分析（上） | Huy&#39;s wiki</title>
+  <meta name="author" content="Huy">
+  
+  <meta name="description" content="1.类加载机制从框架入口文件/public/index.php分析1require __DIR__.&#39;/../bootstrap/autoload.php&#39;;
+查看/bootstrap/autoload.php(此bootstrap是引导程序的意思，和Twitter的前端框架无关)1require ">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="laravel5.1源码分析（上）"/>
+  <meta property="og:site_name" content="Huy&#39;s wiki"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Huy&#39;s wiki" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1><a class="brand" href="/">Huy&#39;s wiki</a><span class="split"></span><span class="title">laravel5.1源码分析（上）</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2016-05-23</span></h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  
+
+  
+	<div class="col-md-12">
+	  
+
+	  <!-- content -->
+	  <h3 id="1-类加载机制"><a href="#1-类加载机制" class="headerlink" title="1.类加载机制"></a>1.类加载机制</h3><p>从框架入口文件/public/index.php分析<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="keyword">__DIR__</span>.<span class="string">'/../bootstrap/autoload.php'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>查看/bootstrap/autoload.php(此bootstrap是<code>引导程序</code>的意思，和Twitter的前端框架无关)<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="keyword">__DIR__</span>.<span class="string">'/../vendor/autoload.php'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>引导程序主要目的是加载框架核心的<code>autoload.php</code><br>查看/vendor/autoload.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require_once</span> <span class="keyword">__DIR__</span> . <span class="string">'/composer'</span> . <span class="string">'/autoload_real.php'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> ComposerAutoloaderInite076afe45cb086ab2da8c82077e278c9::getLoader();</span><br></pre></td></tr></table></figure></p>
+<p>可见框架的类加载机制的核心就是上述两行代码。查看/vendor/composer/autoload_real.php，定义了类<code>ComposerAutoloaderInite076afe45cb086ab2da8c82077e278c9</code>和方法<code>loadClassLoader</code>和<br><code>getLoader</code>，看composer目录下的文件主要有：</p>
+<blockquote>
+<p>autoload_classmap.php<br>autoload_files.php<br>autoload_namespaces.php<br>ClassLoader.php</p>
+</blockquote>
+<p><code>ClassLoader</code>类主要是定义框架的各种规范的类加载方法，以psr4标准的加载机制举例，在<code>autoload_real.php</code>中，实例化<code>ClassLoader</code>执行如下代码：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$map = <span class="keyword">require</span> <span class="keyword">__DIR__</span> . <span class="string">'/autoload_psr4.php'</span>;</span><br><span class="line">        <span class="keyword">foreach</span> ($map <span class="keyword">as</span> $namespace =&gt; $path) &#123;</span><br><span class="line">            $loader-&gt;setPsr4($namespace, $path);</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>autoload_psr4.php</code>返回一个数组<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> <span class="keyword">array</span>(</span><br><span class="line">...</span><br><span class="line"><span class="string">'Carbon\\'</span> =&gt; <span class="keyword">array</span>($vendorDir . <span class="string">'/nesbot/carbon/src/Carbon'</span>),</span><br><span class="line"><span class="string">'App\\'</span> =&gt; <span class="keyword">array</span>($baseDir . <span class="string">'/app'</span>),</span><br><span class="line">)</span><br></pre></td></tr></table></figure></p>
+<p>可以看到第三方类库<code>Carbon</code>对应的目录在vendor下，而项目的根命名空间对应的目录/app，从/public/index.php到这里几乎全是<code>require</code>加载的代码，所以执行到业务代码之前类加载机制已经处理完，框架核心和我们写的<code>App</code>命名空间下的代码都可以被框架加载。</p>
+<p>类加载机制的核心是<code>spl_autoload_register</code>函数，主要思想其实很简单，就是给定一个类名，调用一个回调函数找到项目里的这个php文件，<code>include</code>进来。laravel比较庞大所以加载机制多一些，我们只关心关于psr4标准的加载机制即可。</p>
+<blockquote>
+<p>psr4标准，具体可以参考www.php-fig.org,简而言之就是我们只需要限定跟命名空间和根目录的映射关系，比如<code>App\\</code>对应的是<code>/app</code>，那么<code>App\Http\Controllers\UserController</code>默认的文件路径必须在<code>/app/Http/Controllers/UserController.php</code>，符合这个标准的我们只需要简单实现spl_autoload_register即可实现类自动加载。</p>
+</blockquote>
+<h3 id="2-框架核心Application对象"><a href="#2-框架核心Application对象" class="headerlink" title="2.框架核心Application对象"></a>2.框架核心Application对象</h3><p>回到/public/index.php，<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">require</span> <span class="keyword">__DIR__</span>.<span class="string">'/../bootstrap/autoload.php'</span>;</span><br><span class="line">$app = <span class="keyword">require_once</span> <span class="keyword">__DIR__</span>.<span class="string">'/../bootstrap/app.php'</span>;</span><br></pre></td></tr></table></figure></p>
+<p>第一行做的事是上面分析的关于类自动加载的机制，然后就是加载<br>/bootstrap/app.php实例化框架的核心类Application。<br>构造方法如下：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($basePath = null)</span></span><br><span class="line"></span>&#123;</span><br><span class="line">    <span class="keyword">$this</span>-&gt;registerBaseBindings();  <span class="comment">//往容器注册名称为app的对象，是当前对象本身（继承关系）</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">$this</span>-&gt;registerBaseServiceProviders();<span class="comment">//注册所有地方都必须的基础ServiceProvider 事件和路由</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">$this</span>-&gt;registerCoreContainerAliases(); <span class="comment">//别名配置，用一个简短的命名映射一个带命名空间的类</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ($basePath) &#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;setBasePath($basePath);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>$basePath</code>在/bootstrap/app.php传入的是/bootstrap的上级目录，也就是项目目录。</p>
+<p>Application类继承Container类，Container相当于框架的对象容器，设计理念就是IOC（控制反转），意味着在框架里使用容器托管的对象不需要在相应的类进行硬编码，用到哪个类直接从容器取，如果需要调整我们修改注册到容器的类即可，这样两个类直接实现解耦。laravel这部分的概念通过容器，ioc和Facade设计模式实现。</p>
+<h3 id="Application的一些关键属性和方法（包块继承自Container的）"><a href="#Application的一些关键属性和方法（包块继承自Container的）" class="headerlink" title="Application的一些关键属性和方法（包块继承自Container的）"></a>Application的一些关键属性和方法（包块继承自Container的）</h3><blockquote>
+<ul>
+<li><p>$instance，用于单例模式的静态属性，容器类必然需要单例</p>
+</li>
+<li><p>$instances (array) 保存共享的对象也就是单例对象</p>
+</li>
+<li><p>bindings (array)绑定，数据结构大概如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[<span class="string">'A\B\UserController'</span> =&gt;</span><br><span class="line">    [<span class="string">'concreate'</span> =&gt; \$obj ], <span class="comment">//单例时是闭包函数返回实例，否则只是类名</span></span><br><span class="line">    [<span class="string">'shared'</span> =&gt; <span class="keyword">true</span> ]</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>\$alias (array) 别名数组</p>
+</li>
+<li>bind() 往bindings数组填充数据，默认是非单例模式</li>
+<li>singleton() 调用的bind()传入一个\$shared = true 表示是共享实例，这样会往\$instances数组存入一个对象。</li>
+<li>make() 比如\$app<code>-&gt;make(&#39;redis&#39;)</code>,通过Application的构造函数中调用的alias相关的函数，发现<code>redis</code>是<code>Illuminate\Contracts\Redis\Database</code>的别名，然后在$instance查找是否存在，存在直接返回，不存在的话去\$binds查找绑定关系，找到对应的对应的完整类名，然后通过反射机制找到这个类的构造返回生成实例返回。（大多数情况理解到这里够用了，里面有很多判断比如别名和绑定的倒腾，还要容器的扩展等等，理解核心的机制即可）.</li>
+</ul>
+</blockquote>
+<p>到这里容器对象初始化完成。<br>回到/public/index.php<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">$kernel = $app-&gt;make(Illuminate\Contracts\Http\Kernel::class);</span><br><span class="line"></span><br><span class="line">$response = $kernel-&gt;handle(</span><br><span class="line">    $request = Illuminate\Http\Request::capture()</span><br><span class="line">);</span><br><span class="line"></span><br><span class="line">$response-&gt;send();</span><br><span class="line"></span><br><span class="line">$kernel-&gt;terminate($request, $response);</span><br></pre></td></tr></table></figure></p>
+<p>这部分是初始化处理http请求的Kernel对象，大致是先处理request对象收集的请求信息，包括get、post、ip、uri、headers等数据，然后根据路由文件配置的get、post等请求的uri和控制器及方法映射，进行dispatch分发，初始化对象执行方法，返回一个带有数据（view渲染的试图或者json数据），调用send()方法按照http协议格式化输出内容flush给客户端。这部分下一次单独讲。</p>
+<h3 id="Facade设计模式"><a href="#Facade设计模式" class="headerlink" title="Facade设计模式"></a>Facade设计模式</h3><p>设计模式大多都有重叠的地方，比如数据库设计师典型的工厂模式，默认配置是mysql那么DB系列的方法初始化的是MysqlConnector等，Facade模式的中文翻译是“门面模式”，简单理解为给程序员直接调用的类只是一个门面或者代理，真正的逻辑是在背后映射的那个真实的类来实现。和只有一种模式的工厂模式以及代理模式类似。好处是程序员不需要修改代码，通过修改门面背后的类来换一套实现逻辑。缺点是搞得代码无法快速跟踪，反正我不觉得这种设计模式很好。</p>
+	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+	
+		
+	
+		
+			
+			
+		
+	
+		
+			
+			
+			
+		
+	
+		
+	
+		
+			
+		
+	
+		
+	
+		
+	
+	
+	
+		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next"><a href="/2016/05/23/laravel5-1事件机制使用/" class="alignright next">next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2016 Huy
+  
+      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

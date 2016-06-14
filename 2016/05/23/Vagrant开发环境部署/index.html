@@ -1,0 +1,192 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Vagrant开发环境部署 | Huy&#39;s wiki</title>
+  <meta name="author" content="Huy">
+  
+  <meta name="description" content="文件清单
+Git-2.7.2.exe 主要是用git bash
+vagrant_1.8.1.dmg mac vagrant安装包
+vagrant_1.8.1.msi windows vagrant安装包
+VirtualBox-5.0.18-xxx.dmg mac vbox安装包
+VirtualBox">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Vagrant开发环境部署"/>
+  <meta property="og:site_name" content="Huy&#39;s wiki"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Huy&#39;s wiki" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1><a class="brand" href="/">Huy&#39;s wiki</a><span class="split"></span><span class="title">Vagrant开发环境部署</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2016-05-23</span></h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  
+
+  
+	<div class="col-md-12">
+	  
+
+	  <!-- content -->
+	  <h3 id="文件清单"><a href="#文件清单" class="headerlink" title="文件清单"></a>文件清单</h3><ul>
+<li>Git-2.7.2.exe 主要是用git bash</li>
+<li>vagrant_1.8.1.dmg mac vagrant安装包</li>
+<li>vagrant_1.8.1.msi windows vagrant安装包</li>
+<li>VirtualBox-5.0.18-xxx.dmg mac vbox安装包</li>
+<li>VirtualBox-5.0.18-xxx.exe windows vbox安装包</li>
+<li>zerogo-dev.box 打包好的镜像文件</li>
+</ul>
+<h3 id="zerogo-dev-box已安装列表"><a href="#zerogo-dev-box已安装列表" class="headerlink" title="zerogo-dev.box已安装列表"></a>zerogo-dev.box已安装列表</h3><ol>
+<li>php5.6</li>
+<li>nginx 1.8</li>
+<li>mysql</li>
+<li>postgresql</li>
+<li>redis</li>
+<li>node</li>
+<li>npm</li>
+<li>apidoc</li>
+<li>hhvm facebook的php解析器，功能和php-fpm + php类似</li>
+<li>php-fpm<h2 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h2></li>
+<li>安装VirtualBox</li>
+<li>安装vagrant</li>
+<li>拷贝zerogo-dev.box 磁盘某处</li>
+<li>进入zerogo-dev.box所在目录</li>
+<li>在git bash里执行 vagrant box add zerogo zerogo-dev.box</li>
+<li>vagrant box list 如果添加成功会显示zerogo(virtualbox,0)</li>
+<li>可以在D盘新建目录Code，进入目录bash执行 vagrant init</li>
+<li>用sublime等编辑上一步生成的Vagrantfile</li>
+</ol>
+<h3 id="修改或者打开注释，必须的几项："><a href="#修改或者打开注释，必须的几项：" class="headerlink" title="修改或者打开注释，必须的几项："></a>修改或者打开注释，必须的几项：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">config.vm.box = &quot;zerogo&quot; # 和add时候名字一样</span><br><span class="line">config.vm.box_check_update = false # 不检查更新，不能更新~</span><br><span class="line">config.vm.network &quot;forwarded_port&quot;, guest: 80, host: 8080</span><br><span class="line">config.vm.network &quot;private_network&quot;, ip: &quot;192.168.33.10&quot;</span><br><span class="line">config.vm.synced_folder &quot;/Users/huy/Code&quot;, &quot;/vagrant_data&quot; # windows改成相应的路径 可以用.表示当前D:/Code目录</span><br></pre></td></tr></table></figure>
+<p>在本地浏览器用127.0.0.1:8080和192.168.33.10都可以访问虚拟机的nginx 80端口，数据库可以用192.168.33.10:3306访问，也可以在本地配置端口映射，和80类似。<br>nginx的conf.d有一个默认配置，把路径修改为自己的。<br>apidoc所需的环境已装好，可以直接执行项目里的apidoc.sh.</p>
+<h3 id="vagrant常用命令"><a href="#vagrant常用命令" class="headerlink" title="vagrant常用命令"></a>vagrant常用命令</h3><ul>
+<li>vagrant up 打开虚拟机</li>
+<li>vagrant ssh 进入虚拟机</li>
+<li>vagrant halt 关机</li>
+<li>vagrant suspend 休眠，开机之后如果关主机，先执行这个休眠掉</li>
+<li>vagrant resume 休眠恢复，用vagrant up也可以</li>
+<li>vagrant destroy 干掉虚拟机</li>
+</ul>
+<p>正常的操作步骤是<code>vagrant up</code>开机，在bash用<code>vagrant ssh</code> 进入，如果要退出或关机先<code>ctr + d</code>,然后<code>vagrant suspend</code>或者<code>vagrant halt</code>休眠或关机，再用时，<code>vagrant resume</code>或者<code>vagrant up</code>。</p>
+	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+	
+		
+			
+			
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+			
+			
+			
+		
+	
+	
+	
+		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next"><a href="/2016/05/13/composer包开发示例/" class="alignright next">next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2016 Huy
+  
+      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

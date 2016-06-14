@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>laravel5.1事件机制使用 | Huy&#39;s wiki</title>
+  <meta name="author" content="Huy">
+  
+  <meta name="description" content="事件和队列的区别及关联
+事件 侧重主动触发一个行为，比如注册接口我们可以收集用户数据然后触发一个登录事件，这个事件可以有多个监听器，每个监听器都可以拿到事件的数据进行处理。这是一个典型的观察者模式。
+队列 侧重把想做的比较耗时的业务放在一个容器然后另一个程序一直消费，当然可以是同步处理也可以异步处理">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="laravel5.1事件机制使用"/>
+  <meta property="og:site_name" content="Huy&#39;s wiki"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Huy&#39;s wiki" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1><a class="brand" href="/">Huy&#39;s wiki</a><span class="split"></span><span class="title">laravel5.1事件机制使用</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2016-05-23</span></h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  
+
+  
+	<div class="col-md-12">
+	  
+
+	  <!-- content -->
+	  <h3 id="事件和队列的区别及关联"><a href="#事件和队列的区别及关联" class="headerlink" title="事件和队列的区别及关联"></a>事件和队列的区别及关联</h3><blockquote>
+<p><code>事件</code> 侧重主动触发一个行为，比如注册接口我们可以收集用户数据然后触发一个登录事件，这个事件可以有多个监听器，每个监听器都可以拿到事件的数据进行处理。这是一个典型的观察者模式。</p>
+<p><code>队列</code> 侧重把想做的比较耗时的业务放在一个容器然后另一个程序一直消费，当然可以是同步处理也可以异步处理。和事件的区别是，事件侧重只抛出一个事件（核心是数据）剩下的交给观察者们，队列是把想做的几件事都放到队列。队列是典型的生产者消费者模式，常见的有自定义队列，redis队列和kakfa。</p>
+</blockquote>
+<p>注册、充值和购买等核心业务接口，通常要做很多运营相关的处理，最差的方式是硬编码，队列稍好，可以把业务转移到消费者，但是比如注册，要送红包，要处理师徒相关的等等，队列需要在controller中dispatch好几次，这种场景事件更干净一点。register接口处理完业务，抛出一个UserRegEvent，这种对象可以有一个User类的属性存放数据库取出的model，然后定义RedPacketListener和TuiguangListener，这两个监听器拿到user model有充足的数据做自己要做的逻辑。以后停掉红包我们就注释掉数组中一行数据即可，新运营活动增加一个listener即可。</p>
+<h3 id="la5-1使用队列"><a href="#la5-1使用队列" class="headerlink" title="la5.1使用队列"></a>la5.1使用队列</h3><p>队列默认(驱动默认是sync)是同步的，也就是几个listener的逻辑会同步执行完才返回。事件支持队列模式，需要listener <code>implement ShouldQueue</code>，然后配置队列相关的信息，如果是用database驱动，需要在默认连接的数据库新建jobs表，这部分和队列是一样的,一般驱动选redis，在config/queue.php配置中驱动选redis，config/database.php配置队列所用的redis连接，这两种方式都已经测试通过。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">php artisan queue:table</span><br></pre></td></tr></table></figure></p>
+<p>生成jobs表的迁移文件，然后<code>php artisan migrate</code>会自动在默认库建立该表。</p>
+<h4 id="自动生成事件和监听器"><a href="#自动生成事件和监听器" class="headerlink" title="自动生成事件和监听器"></a>自动生成事件和监听器</h4><p>在app/Providers/EventServiceProvider.php中<code>$listen</code>数组配置如下信息：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">protected</span> $listen = [</span><br><span class="line">  <span class="string">'App\Events\UserRegEvent'</span> =&gt; [</span><br><span class="line">    <span class="string">'App\Listeners\SendPrizeListener'</span>,</span><br><span class="line">    <span class="string">'App\Listeners\SaveLogListener'</span></span><br><span class="line">  ],</span><br><span class="line">];</span><br></pre></td></tr></table></figure></p>
+<p>配置了一个UserRegEvent，和它对应的两个listener，然后执行<br><img src="http://static.zybuluo.com/hushaofei/8fk7xz3e8t73n6xuzl8lif7w/generate.png" alt="generate.png-22.6kB"></p>
+<p>Events和Listeners目录自动生成对应的文件：<br><img src="http://static.zybuluo.com/hushaofei/ij3kpq79xt18c29i5qhqzvjn/events.png" alt="events.png-16.6kB"><br><img src="http://static.zybuluo.com/hushaofei/gtdlcuy34rba40sqhqfi1t65/listeners.png" alt="listeners.png-19.3kB"></p>
+<p>事件的属性应该存储尽可能多的数据（可以是对象，比如登录注册和充值，也可以是数组比如购买），适应更多的监听器业务。这个demo没有在zgapi项目做，需要参考的找我。记得测试或者使用队列事件的时候在项目根目录执行：<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">nohup php artisan queue:listen &amp;</span><br></pre></td></tr></table></figure></p>
+<p>启用队列的处理（消费）进程。</p>
+<h3 id="队列中存放的数据结构"><a href="#队列中存放的数据结构" class="headerlink" title="队列中存放的数据结构"></a>队列中存放的数据结构</h3><p>mysql中jobs标的结构和数据如下<br><img src="http://static.zybuluo.com/hushaofei/gsn67p9ivlmd6b2j4fok1tz7/struct.png" alt="struct.png-91.8kB"><br>payload存的是序列化后的对象，如果是model只保存默认主键。</p>
+<p>redis中会有一个key<code>queue:default</code>，暂时看不到数据，以后有兴趣的单独找。<br><img src="http://static.zybuluo.com/hushaofei/h3je0bpvp8edldo9f8yt28kl/redis.png" alt="redis.png-13.8kB"></p>
+	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+	
+		
+	
+		
+			
+		
+	
+		
+			
+			
+		
+	
+		
+	
+		
+	
+		
+			
+			
+			
+		
+	
+		
+	
+	
+	
+		<li class="prev"><a href="/2016/05/23/laravel5-1源码分析（上）/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next"><a href="/2016/05/18/阿里云服务器laravel获取不到客户端真实ip的问题/" class="alignright next">next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2016 Huy
+  
+      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

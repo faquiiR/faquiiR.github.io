@@ -1,0 +1,168 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>composer包开发示例 | Huy&#39;s wiki</title>
+  <meta name="author" content="Huy">
+  
+  <meta name="description" content="关于composer
+composer的作用类似于node.js的npm,用来代替PEAR以更简单简洁的方式安装php项目的依赖包.composer和git以及packagelist密切相关.代码本身通常托管在github的仓库,在packagelist发布自己的包,url是github的仓库地址.">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="composer包开发示例"/>
+  <meta property="og:site_name" content="Huy&#39;s wiki"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Huy&#39;s wiki" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1><a class="brand" href="/">Huy&#39;s wiki</a><span class="split"></span><span class="title">composer包开发示例</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2016-05-13</span></h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  
+
+  
+	<div class="col-md-12">
+	  
+
+	  <!-- content -->
+	  <h2 id="关于composer"><a href="#关于composer" class="headerlink" title="关于composer"></a>关于composer</h2><blockquote>
+<p>composer的作用类似于node.js的npm,用来代替PEAR以更简单简洁的方式安装php项目的依赖包.composer和git以及packagelist<br>密切相关.代码本身通常托管在github的仓库,在packagelist发布自己的包,url是github的仓库地址.</p>
+</blockquote>
+<h2 id="composer包开发流程"><a href="#composer包开发流程" class="headerlink" title="composer包开发流程"></a>composer包开发流程</h2><h3 id="在github新建仓库-本地克隆"><a href="#在github新建仓库-本地克隆" class="headerlink" title="在github新建仓库,本地克隆"></a>在github新建仓库,本地克隆</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git clone git@github.com:faquiir/package-test.git</span><br><span class="line">cd package-test</span><br><span class="line">composer init</span><br></pre></td></tr></table></figure>
+<h3 id="修改配置文件"><a href="#修改配置文件" class="headerlink" title="修改配置文件"></a>修改配置文件</h3><p>执行<code>compsoer init</code>之后会出现交互的提示,按照提示输入包名,作者,描述,依赖的包和开源协议等信息,然后会自动生成<code>composer.json</code><br>文件.<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"name"</span>: <span class="string">"huy/test"</span>,</span><br><span class="line">    <span class="attr">"description"</span>: <span class="string">"composer and package.list test."</span>,</span><br><span class="line">    <span class="attr">"require"</span>: &#123;</span><br><span class="line">        <span class="attr">"php"</span>: <span class="string">"&gt;=5.3"</span></span><br><span class="line">    &#125;,</span><br><span class="line">    <span class="attr">"license"</span>: <span class="string">"MIT"</span>,</span><br><span class="line">    <span class="attr">"authors"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"name"</span>: <span class="string">"hushaofei"</span>,</span><br><span class="line">            <span class="attr">"email"</span>: <span class="string">"858518145@qq.com"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">"minimum-stability"</span>: <span class="string">"stable"</span>,</span><br><span class="line">    <span class="attr">"autoload"</span>: &#123;</span><br><span class="line">        <span class="attr">"psr-4"</span>: &#123;</span><br><span class="line">            <span class="attr">"Huy\\"</span>: <span class="string">"src/"</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>修改生成的<code>composer.json</code>文件,增加autoload配置,Huy命名空间的根目录是当前目录下的src/.</p>
+<h3 id="根据配置文件生成包骨架"><a href="#根据配置文件生成包骨架" class="headerlink" title="根据配置文件生成包骨架"></a>根据配置文件生成包骨架</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">composer install</span><br></pre></td></tr></table></figure>
+<p>执行完目录下会生成<code>vendor</code>目录,当前目录结构如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">.</span><br><span class="line">├── README.md</span><br><span class="line">├── composer.json</span><br><span class="line">├── composer.lock</span><br><span class="line">├── src</span><br><span class="line">│   └── Test.php</span><br><span class="line">├── test.php</span><br><span class="line">└── vendor</span><br><span class="line">    ├── autoload.php</span><br><span class="line">    └── composer</span><br><span class="line">        ├── ClassLoader.php</span><br><span class="line">        ├── LICENSE</span><br><span class="line">        ├── autoload_classmap.php</span><br><span class="line">        ├── autoload_namespaces.php</span><br><span class="line">        ├── autoload_psr4.php</span><br><span class="line">        ├── autoload_real.php</span><br><span class="line">        └── installed.json</span><br></pre></td></tr></table></figure></p>
+<p>打开<code>autoload_psr4.php</code>文件,可见<code>composer.json</code>文件配置的命名空间和目录的映射已经生成.<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// autoload_psr4.php @generated by Composer</span></span><br><span class="line"></span><br><span class="line">$vendorDir = dirname(dirname(<span class="keyword">__FILE__</span>));</span><br><span class="line">$baseDir = dirname($vendorDir);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span> <span class="keyword">array</span>(</span><br><span class="line">    <span class="string">'Huy\\'</span> =&gt; <span class="keyword">array</span>($baseDir . <span class="string">'/src'</span>),</span><br><span class="line">);</span><br></pre></td></tr></table></figure></p>
+<h3 id="创建目录和测试文件"><a href="#创建目录和测试文件" class="headerlink" title="创建目录和测试文件"></a>创建目录和测试文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir src &amp;&amp; cd  src</span><br><span class="line">touch Test.php</span><br></pre></td></tr></table></figure>
+<p>Test.php内容如下:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">Huy</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Test</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">sayHi</span><span class="params">()</span></span><br><span class="line">  </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"hi~"</span> . PHP_EOL;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在根目录新建<code>test.php</code>内容如下:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"><span class="keyword">require</span> <span class="string">'vendor/autoload.php'</span>;</span><br><span class="line"></span><br><span class="line">$test = <span class="keyword">new</span> Huy\Test();</span><br><span class="line">$test-&gt;sayHi();</span><br></pre></td></tr></table></figure></p>
+<p>然后执行<code>php test.php</code>可以正常输出.</p>
+<h3 id="发布"><a href="#发布" class="headerlink" title="发布"></a>发布</h3><p>如果composer.json中 <code>&quot;minimum-stability&quot;: &quot;stable&quot;</code> 配置的是dev,可以先修改为stable然后执行<br><code>composer update</code>进行更新,这个配置别人使用包的时候会用到,如果是开发测试完成就可以修改为stable.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git commit -am &quot;状态修改&quot;</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<p>在<code>https://packagist.org/</code>注册登录然后submit自己的github仓库地址即可.</p>
+<p>然后是在新的项目安装测试这个包:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ../demos</span><br><span class="line">composer require huy/test dev-master # 在github未release该项目时需要加上dev-master</span><br></pre></td></tr></table></figure></p>
+<p>剩下的就是和使用别的包一样了:<br><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> <span class="title">App</span>\<span class="title">Http</span>\<span class="title">Controllers</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">Huy</span>\<span class="title">Test</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">use</span> <span class="title">App</span>\<span class="title">Http</span>\<span class="title">Requests</span>;</span><br><span class="line"><span class="keyword">use</span> <span class="title">Illuminate</span>\<span class="title">Support</span>\<span class="title">Facades</span>\<span class="title">Event</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">UserController</span> <span class="keyword">extends</span> <span class="title">Controller</span></span><br><span class="line"></span>&#123;</span><br><span class="line">  <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">test</span><span class="params">()</span></span><br><span class="line">  </span>&#123;</span><br><span class="line">    $test = <span class="keyword">new</span> Test();</span><br><span class="line">    $test-&gt;sayHi();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这样一个简单的composer包就开发完成了.</p>
+	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+	
+		
+			
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+			
+			
+		
+	
+		
+	
+	
+	
+		<li class="prev"><a href="/2016/05/23/Vagrant开发环境部署/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next disabled"><a>next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2016 Huy
+  
+      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

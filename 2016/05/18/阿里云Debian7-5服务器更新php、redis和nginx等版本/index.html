@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>阿里云Debian7.5服务器更新php、redis和nginx等版本 | Huy&#39;s wiki</title>
+  <meta name="author" content="Huy">
+  
+  <meta name="description" content="公司服务器系统版本使用Debian7.5,生产环境用的软件有php5-fpm,mysql,nginx,redis,nodejs等.主要开发框架是Laravel5.1,要求php版本至少是5.5.9,默认源下载的php版本是5.4.x,nginx版本是1.2.1,redis版本也很低导致无法bind多">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="阿里云Debian7.5服务器更新php、redis和nginx等版本"/>
+  <meta property="og:site_name" content="Huy&#39;s wiki"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Huy&#39;s wiki" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1><a class="brand" href="/">Huy&#39;s wiki</a><span class="split"></span><span class="title">阿里云Debian7.5服务器更新php、redis和nginx等版本</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2016-05-18</span></h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  
+
+  
+	<div class="col-md-12">
+	  
+
+	  <!-- content -->
+	  <p>公司服务器系统版本使用Debian7.5,生产环境用的软件有php5-fpm,mysql,nginx,redis,nodejs等.<br>主要开发框架是Laravel5.1,要求php版本至少是5.5.9,默认源下载的php版本是5.4.x,nginx版本是1.2.1,redis版本也很低导致<br>无法bind多个ip.<br>已安装的环境需要升级,未安装的确保版本比较新,所以需要使用NB的dotdeb.org来作为源.</p>
+<h3 id="修改-etc-apt-source-list文件"><a href="#修改-etc-apt-source-list文件" class="headerlink" title="修改/etc/apt/source.list文件"></a>修改/etc/apt/source.list文件</h3><p>在source.list末尾添加dotdeb的源信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deb http://packages.dotdeb.org wheezy all</span><br><span class="line">deb-src http://packages.dotdeb.org wheezy all</span><br><span class="line">deb http://packages.dotdeb.org wheezy-php56 all</span><br><span class="line">deb-src http://packages.dotdeb.org wheezy-php56 all</span><br></pre></td></tr></table></figure></p>
+<h3 id="添加dotdeb的public-key"><a href="#添加dotdeb的public-key" class="headerlink" title="添加dotdeb的public key"></a>添加dotdeb的public key</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget http://www.dotdeb.org/dotdeb.gpg</span><br><span class="line">cat dotdeb.gpg | apt-key add -</span><br></pre></td></tr></table></figure>
+<p>更新源并安装php5-cli<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get update</span><br><span class="line">$ apt-get install php5-cli</span><br><span class="line">$ php -v</span><br><span class="line">PHP 5.6.21-1~dotdeb+7.1 (cli) (built: Apr 29 2016 13:07:22)</span><br><span class="line">Copyright (c) 1997-2016 The PHP Group</span><br><span class="line">Zend Engine v2.6.0, Copyright (c) 1998-2016 Zend Technologies</span><br><span class="line">    with Zend OPcache v7.0.6-dev, Copyright (c) 1999-2016, by Zend Technologies</span><br></pre></td></tr></table></figure></p>
+<p>更新之后安装的php,nginx和redis都是比较新的版本.</p>
+<h3 id="升级php5-4到5-6"><a href="#升级php5-4到5-6" class="headerlink" title="升级php5.4到5.6"></a>升级php5.4到5.6</h3><p>上述步骤执行完之后,执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">apt-get upgrade # 升级</span><br><span class="line">apt-get dist-upgrade # 有依赖版本不统一的情况下一起升级</span><br></pre></td></tr></table></figure></p>
+<p><code>The packages from Dotdeb should work on Ubuntu, but no additional support will be provided.</code><br>官方说dotdeb的软件包可以在Ubuntu运行,只是不提供额外的技术支持,所以Ubuntu也可以使用.</p>
+	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+			
+			
+		
+	
+		
+	
+		
+	
+		
+	
+	
+	
+		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next disabled"><a>next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2016 Huy
+  
+      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用apidocjs维护api文档 | Huy&#39;s wiki</title>
+  <meta name="author" content="Huy">
+  
+  <meta name="description" content="之前使用markdown维护api文档,这种比较原始的方式缺点很明显:
+
+在单独的项目,更新步骤较多导致文档不同步分组不明显显示效果不尽如人意,不够友好(高大上)
+
+beego框架中astaxie引入swagger实现Rest风格的可视化文档,php同样也可以使用swagger来做,但是相对来说ap">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="使用apidocjs维护api文档"/>
+  <meta property="og:site_name" content="Huy&#39;s wiki"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Huy&#39;s wiki" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1><a class="brand" href="/">Huy&#39;s wiki</a><span class="split"></span><span class="title">使用apidocjs维护api文档</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2016-05-18</span></h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  
+
+  
+	<div class="col-md-12">
+	  
+
+	  <!-- content -->
+	  <p>之前使用markdown维护api文档,这种比较原始的方式缺点很明显:</p>
+<blockquote>
+<p>在单独的项目,更新步骤较多导致文档不同步<br>分组不明显<br>显示效果不尽如人意,不够友好(高大上)</p>
+</blockquote>
+<p>beego框架中astaxie引入swagger实现Rest风格的可视化文档,php同样也可以使用swagger来做,但是相对来说<br>apidocjs更方便使用一些.</p>
+<h3 id="安装nodejs"><a href="#安装nodejs" class="headerlink" title="安装nodejs"></a>安装nodejs</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install npm # osx</span><br><span class="line"></span><br><span class="line">sudo apt-get install curl # debian</span><br><span class="line">sudo curl -sL https://deb.nodesource.com/setup | bash -</span><br><span class="line">apt-get install -y nodejs</span><br></pre></td></tr></table></figure>
+<h3 id="安装apidocjs"><a href="#安装apidocjs" class="headerlink" title="安装apidocjs"></a>安装apidocjs</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g apidoc</span><br></pre></td></tr></table></figure>
+<h3 id="apidoc常用"><a href="#apidoc常用" class="headerlink" title="apidoc常用"></a>apidoc常用</h3><p><code>apidoc -i myapp/ -o apidoc/ -t mytemplate/</code><br>-i 指定输入目录, -o指定输出目录,-t为临时目录,示例shell文件如下:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br><span class="line"></span><br><span class="line">rm -rf doc/* # 多次执行会导致页面可能无法显示的问题</span><br><span class="line">rm -rf temp</span><br><span class="line">mkdir temp  # 临时目录</span><br><span class="line"></span><br><span class="line"># 遍历Controllers下面的文件,复制到temp临时目录</span><br><span class="line">for i in app/Http/Controllers ; do</span><br><span class="line">cp -r $i &quot;temp/$(dirname $(dirname $i))&quot;</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"># 使用apidoc工具生成html页面</span><br><span class="line">apidoc -i temp -o doc</span><br><span class="line">rm -r temp</span><br></pre></td></tr></table></figure></p>
+<p><code>apidoc.json</code>示例配置文件如下:<br><figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"name"</span>: <span class="string">"零钱购API文档 zgapi-ng"</span>,</span><br><span class="line">  <span class="attr">"version"</span>: <span class="string">"4.0.0"</span>,</span><br><span class="line">  <span class="attr">"description"</span>: <span class="string">"zerogo api next generation"</span>,</span><br><span class="line">  <span class="attr">"title"</span>: <span class="string">"zgapi-ng"</span>,</span><br><span class="line">  <span class="attr">"url"</span> : <span class="string">"http://testzgapi4.taojoy.com.cn"</span>,</span><br><span class="line">  <span class="attr">"order"</span>: [</span><br><span class="line"></span><br><span class="line">  ],</span><br><span class="line">  <span class="attr">"header"</span>: &#123;</span><br><span class="line">    <span class="attr">"title"</span>: <span class="string">"接口说明"</span>,</span><br><span class="line">    <span class="attr">"filename"</span>: <span class="string">"header.md"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"footer"</span>: &#123;</span><br><span class="line">    <span class="attr">"title"</span>: <span class="string">"其它补充"</span>,</span><br><span class="line">    <span class="attr">"filename"</span>: <span class="string">"footer.md"</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">"template"</span>: &#123;</span><br><span class="line">    <span class="attr">"forceLanguage"</span>: <span class="string">"en"</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>特别注意,<code>version</code>的值格式必须为<code>0.0.0</code>,不然会报错,包括控制器方法之前的注释也是一样.<br>示例代码注释:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line"> *</span><br><span class="line"> * @api &#123;put&#125; /v4/user/info 修改个人信息</span><br><span class="line"> * @apiName update</span><br><span class="line"> * @apiGroup User</span><br><span class="line"> *</span><br><span class="line"> * @apiDescription 修改个人信息</span><br><span class="line"> *</span><br><span class="line"> * @apiParam &#123;String&#125; nickname 用户昵称</span><br><span class="line"> * @apiParam &#123;String&#125; tel 手机号码</span><br><span class="line"> * @apiParam &#123;String&#125; email 邮箱</span><br><span class="line"> * @apiParam &#123;String&#125; signature 个性签名</span><br><span class="line"> * @apiParam &#123;String&#125; alipay 支付宝</span><br><span class="line"> * @apiParam &#123;String&#125; weixin 微信</span><br><span class="line"> * @apiParam &#123;String&#125; qq QQ号码</span><br><span class="line"> *</span><br><span class="line"> * @apiVersion 4.0.0</span><br><span class="line"> * @apiSuccessExample Success-Response:</span><br><span class="line"> *  HTTP/1.1 200 OK</span><br><span class="line"> * &#123;</span><br><span class="line"> *  &quot;code&quot;:200</span><br><span class="line"> *  &quot;detail&quot;:&quot;sucess&quot;</span><br><span class="line"> *  &quot;data&quot;:&#123; &#125;</span><br><span class="line"> *  &#125;</span><br><span class="line"> */</span><br></pre></td></tr></table></figure></p>
+	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+			
+			
+		
+	
+		
+	
+		
+	
+		
+	
+		
+			
+			
+			
+	
+	
+		<li class="prev disabled"><a><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next"><a href="/2016/05/12/Hexo搭建个人wiki/" class="alignright next">next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2016 Huy
+  
+      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>

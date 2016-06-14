@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Hexo搭建个人wiki | Huy&#39;s wiki</title>
+  <meta name="author" content="Huy">
+  
+  <meta name="description" content="创建github项目github pages要求项目名称为username.github.io，新建faquiir.github.io。
+安装Hexo和wixo主题安装npm1brew install npm
+安装Hexo1npm install -g hexo-cli
+自动部署需要安装git1br">
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Hexo搭建个人wiki"/>
+  <meta property="og:site_name" content="Huy&#39;s wiki"/>
+
+  
+    <meta property="og:image" content="undefined"/>
+  
+
+  
+    <link rel="alternative" href="/atom.xml" title="Huy&#39;s wiki" type="application/atom+xml">
+  
+  
+    <link href="/favicon.png" rel="icon">
+  
+  
+  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
+  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+  <script src="/js/jquery-2.0.3.min.js"></script>
+
+  <!-- analytics -->
+  
+
+</head>
+
+<body id="body" data-spy="scroll" data-target=".toc">
+  <div class="container" id="container">
+	<div class="content">
+	  <div class="page-header">		
+  <h1><a class="brand" href="/">Huy&#39;s wiki</a><span class="split"></span><span class="title">Hexo搭建个人wiki</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2016-05-12</span></h1>
+</div>		
+
+<div class="row page">
+  <!-- cols -->	
+  
+  
+
+  
+	<div class="col-md-12">
+	  
+
+	  <!-- content -->
+	  <h2 id="创建github项目"><a href="#创建github项目" class="headerlink" title="创建github项目"></a>创建github项目</h2><p>github pages要求项目名称为username.github.io，新建faquiir.github.io。</p>
+<h2 id="安装Hexo和wixo主题"><a href="#安装Hexo和wixo主题" class="headerlink" title="安装Hexo和wixo主题"></a>安装Hexo和wixo主题</h2><h3 id="安装npm"><a href="#安装npm" class="headerlink" title="安装npm"></a>安装npm</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install npm</span><br></pre></td></tr></table></figure>
+<h3 id="安装Hexo"><a href="#安装Hexo" class="headerlink" title="安装Hexo"></a>安装Hexo</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g hexo-cli</span><br></pre></td></tr></table></figure>
+<h3 id="自动部署需要安装git"><a href="#自动部署需要安装git" class="headerlink" title="自动部署需要安装git"></a>自动部署需要安装git</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">brew install git</span><br></pre></td></tr></table></figure>
+<h3 id="安装hexo的git插件"><a href="#安装hexo的git插件" class="headerlink" title="安装hexo的git插件"></a>安装hexo的git插件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+<h3 id="安装wixo主题"><a href="#安装wixo主题" class="headerlink" title="安装wixo主题"></a>安装wixo主题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/wzpan/hexo-theme-wixo.git themes/wixo</span><br><span class="line">npm install hexo-tag-bootstrap --save</span><br></pre></td></tr></table></figure>
+<p>修改_config.yml，<code>theme</code>修改为<code>wixo</code>，<code>deploy</code>修改为</p>
+<blockquote>
+<p>deploy:<br>  type: git<br>  repo: <a href="https://github.com/faquiiR/faquiir.github.io" target="_blank" rel="external">https://github.com/faquiiR/faquiir.github.io</a><br>  branch: master </p>
+</blockquote>
+<h3 id="配置github的CNAME"><a href="#配置github的CNAME" class="headerlink" title="配置github的CNAME"></a>配置github的CNAME</h3><p>hexo上传CNAME文件需要放在source目录</p>
+<h3 id="基本操作"><a href="#基本操作" class="headerlink" title="基本操作"></a>基本操作</h3><blockquote>
+<p>hexo new hello-world (wixo目录根据categories标签的值区分)<br>hexo clean<br>hexo deploy -g 或者hexo generate -d 生成静态文件并部署到github<br>hexo server (在<a href="http://localhost:4000端口预览" target="_blank" rel="external">http://localhost:4000端口预览</a>)</p>
+</blockquote>
+<h3 id="使用hexo的坑"><a href="#使用hexo的坑" class="headerlink" title="使用hexo的坑"></a>使用hexo的坑</h3><p>换了个电脑，又没有备份之前的markdown文件，重新搭hexo之后本地文件覆盖github的，导致之前的文件全没了，只能从本地的md再重新整理了。</p>
+	  
+
+	  <div>
+  		<center>
+		  <div class="pagination">
+<ul class="pagination">
+	
+	
+	
+	
+	
+	
+		
+	
+		
+	
+		
+	
+		
+	
+		
+			
+		
+	
+		
+	
+		
+	
+		
+	
+		
+			
+			
+		
+	
+	
+	
+		<li class="prev"><a href="/2016/05/18/使用apidocjs维护api文档/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
+	
+	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
+	
+		<li class="next disabled"><a>next<i class="fa fa-arrow-circle-o-right"></i></a></li>
+	
+</ul>
+</div>
+
+		</center>
+	  </div>
+	  
+	</div> <!-- col-md-9/col-md-12 -->
+	
+  </div><!-- row -->
+
+	</div>
+  </div>
+  <div class="container-narrow">
+	<footer> <p>
+  &copy; 2016 Huy
+  
+      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
+</p> </footer>
+  </div> <!-- container-narrow -->
+  
+<a id="gotop" href="#">   
+  <span>▲</span> 
+</a>
+
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+<script src="/js/jquery.tableofcontents.min.js"></script>
+<script src="/js/tocgenerator.min.js"></script>
+<script src="/js/main.js"></script>
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+</body>
+</html>
