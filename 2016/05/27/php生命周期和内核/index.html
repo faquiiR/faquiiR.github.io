@@ -1,64 +1,304 @@
-<!DOCTYPE HTML>
-<html>
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
 <head>
-  <meta charset="utf-8">
-  
-  <title>php生命周期和内核 | Huy&#39;s wiki</title>
-  <meta name="author" content="Huy">
-  
-  <meta name="description" content="关注PHP内核实现的原因c是启蒙,java是第一份工作入行的语言,工作期间主要用php,纯php写过游戏代码,laravel写过web和api.更喜欢的语言是go,更欣赏的语言(工具)是openresty.吃饭的技术还是要花更多的时间去深入了解,起码对自己来说够用,可以解决绝大部分的问题,可以支撑自">
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
 
-  <meta property="og:title" content="php生命周期和内核"/>
-  <meta property="og:site_name" content="Huy&#39;s wiki"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
 
   
-    <meta property="og:image" content="undefined"/>
   
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
 
   
-    <link rel="alternative" href="/atom.xml" title="Huy&#39;s wiki" type="application/atom+xml">
   
   
-    <link href="/favicon.png" rel="icon">
-  
-  
-  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
-  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
-
-  <script src="/js/jquery-2.0.3.min.js"></script>
-
-  <!-- analytics -->
   
 
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="关注PHP内核实现的原因c是启蒙,java是第一份工作入行的语言,工作期间主要用php,纯php写过游戏代码,laravel写过web和api.更喜欢的语言是go,更欣赏的语言(工具)是openresty.吃饭的技术还是要花更多的时间去深入了解,起码对自己来说够用,可以解决绝大部分的问题,可以支撑自己的技术体系.每次读相关的资料都会比上一次有更深刻的了解,知识面越广,深度越深,之前的疑问也都豁然开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php生命周期和内核">
+<meta property="og:url" content="http://ccxhuy.cn/2016/05/27/php生命周期和内核/index.html">
+<meta property="og:site_name" content="很多事还没做">
+<meta property="og:description" content="关注PHP内核实现的原因c是启蒙,java是第一份工作入行的语言,工作期间主要用php,纯php写过游戏代码,laravel写过web和api.更喜欢的语言是go,更欣赏的语言(工具)是openresty.吃饭的技术还是要花更多的时间去深入了解,起码对自己来说够用,可以解决绝大部分的问题,可以支撑自己的技术体系.每次读相关的资料都会比上一次有更深刻的了解,知识面越广,深度越深,之前的疑问也都豁然开">
+<meta property="og:updated_time" content="2016-06-14T15:02:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="php生命周期和内核">
+<meta name="twitter:description" content="关注PHP内核实现的原因c是启蒙,java是第一份工作入行的语言,工作期间主要用php,纯php写过游戏代码,laravel写过web和api.更喜欢的语言是go,更欣赏的语言(工具)是openresty.吃饭的技术还是要花更多的时间去深入了解,起码对自己来说够用,可以解决绝大部分的问题,可以支撑自己的技术体系.每次读相关的资料都会比上一次有更深刻的了解,知识面越广,深度越深,之前的疑问也都豁然开">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://ccxhuy.cn/2016/05/27/php生命周期和内核/"/>
+
+
+  <title> php生命周期和内核 | 很多事还没做 </title>
 </head>
 
-<body id="body" data-spy="scroll" data-target=".toc">
-  <div class="container" id="container">
-	<div class="content">
-	  <div class="page-header">		
-  <h1><a class="brand" href="/">Huy&#39;s wiki</a><span class="split"></span><span class="title">php生命周期和内核</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2016-05-27</span></h1>
-</div>		
+<body itemscope itemtype="//schema.org/WebPage" lang="">
 
-<div class="row page">
-  <!-- cols -->	
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">很多事还没做</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
   
   
 
   
-	<div class="col-md-12">
-	  
+  
+  
 
-	  <!-- content -->
-	  <h3 id="关注PHP内核实现的原因"><a href="#关注PHP内核实现的原因" class="headerlink" title="关注PHP内核实现的原因"></a>关注PHP内核实现的原因</h3><p>c是启蒙,java是第一份工作入行的语言,工作期间主要用php,纯php写过游戏代码,laravel写过web和api.更喜欢的语言是go,更欣赏的语言(工具)是openresty.<br>吃饭的技术还是要花更多的时间去深入了解,起码对自己来说够用,可以解决绝大部分的问题,可以支撑自己的技术体系.每次读相关的资料都会比上一次有更深刻的了解,<br>知识面越广,深度越深,之前的疑问也都豁然开朗了,同时有更多的疑问和困扰,这也许正应了那句话:刚毕业的时候觉得自己什么都会,工作一阵觉得自己会几门技术,再久了<br>觉得自己什么都不会了.广度和深度的问题,我选择一专多长这种模式,做到比更多的人更了解php的知识体系,学好自己喜欢的go和resty.</p>
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                php生命周期和内核
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-05-27T15:00:13+08:00" content="2016-05-27">
+              2016-05-27
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/PHP/" itemprop="url" rel="index">
+                    <span itemprop="name">PHP</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="关注PHP内核实现的原因"><a href="#关注PHP内核实现的原因" class="headerlink" title="关注PHP内核实现的原因"></a>关注PHP内核实现的原因</h3><p>c是启蒙,java是第一份工作入行的语言,工作期间主要用php,纯php写过游戏代码,laravel写过web和api.更喜欢的语言是go,更欣赏的语言(工具)是openresty.<br>吃饭的技术还是要花更多的时间去深入了解,起码对自己来说够用,可以解决绝大部分的问题,可以支撑自己的技术体系.每次读相关的资料都会比上一次有更深刻的了解,<br>知识面越广,深度越深,之前的疑问也都豁然开朗了,同时有更多的疑问和困扰,这也许正应了那句话:刚毕业的时候觉得自己什么都会,工作一阵觉得自己会几门技术,再久了<br>觉得自己什么都不会了.广度和深度的问题,我选择一专多长这种模式,做到比更多的人更了解php的知识体系,学好自己喜欢的go和resty.</p>
 <h3 id="个人php方向的技能树"><a href="#个人php方向的技能树" class="headerlink" title="个人php方向的技能树"></a>个人php方向的技能树</h3><blockquote>
 <ul>
 <li>php手册的大部分知识点</li>
@@ -89,92 +329,279 @@
 <p>激活sapi的sapi_activate函数内一眼看去全是request,header,post,cookie等单词,也就是针对请求的各种变量的初始化,环境变量相关的宏是SG(),post,cookie等数据的读取函数的初始化,$_POST、$_GET、$_COOKIE、$_SERVER、$_ENV、$_FILES<br>也会根据fcgi从nginx的socket请求读取的原始数据进行格式处理之后解析到的值进行初始化.<br>最后是zend_activate_modules调用各个扩展模块的RINIT函数.</p>
 <h4 id="cgi进程解析器进行处理并将标准输出stdout和错误输出stderr返回给nginx"><a href="#cgi进程解析器进行处理并将标准输出stdout和错误输出stderr返回给nginx" class="headerlink" title="cgi进程解析器进行处理并将标准输出stdout和错误输出stderr返回给nginx"></a>cgi进程解析器进行处理并将标准输出stdout和错误输出stderr返回给nginx</h4><p>这个过程是cgi进程根据环境变量和标准输入找到对应的php脚本进行解释执行.php_execute_script函数包含了运行PHP脚本的全部过程.<br>这个过程主要是zend引擎和php核心的工作.词法分析,语法分析,语义分析,去掉空格注释,用re2c工具将php源码解析为一个个的token并填充到指定格式的解析树.然后是语法语义分析将token对应为<br>zend虚拟机自己的opcode指令,比如ZEND_ECHO等,zend指令对应的是php核心的c函数,所有脚本的代码解析完opcode会存入opcode array结构体,结构体内部维护了一个数组,executor的执行类似<br>while(1) do,从array取出opcode然后用CALL或者GOTO等方式调用对应的c函数,函数,类和变量等存在之前过程初始化赋值的EG(),代码执行完毕输出结果通过当前socket连接的fd回传给nginx</p>
 <h4 id="cgi解析器结束当前socket连接-并等待下一个连接"><a href="#cgi解析器结束当前socket连接-并等待下一个连接" class="headerlink" title="cgi解析器结束当前socket连接,并等待下一个连接"></a>cgi解析器结束当前socket连接,并等待下一个连接</h4><p>php_request_shutdown进行一次请求结束之后的关闭操作.register_shutdown_function注册的函数会执行,EG(objects_store）中对象的_destruct方法执行,<br>flush输出缓存中的数据,按照http协议在socket中发送标准的http头,执行各个扩展的RSHUTDOWN,SG(sapi_headers)、SG(request_info)中的内容清空,关闭各种流文件,<br>总之就是各种关闭清空操作.</p>
-<h3 id="先搭一个架子-后续纠正或者补充-争取自己看的时候可以比较清晰理解-现在写的很乱"><a href="#先搭一个架子-后续纠正或者补充-争取自己看的时候可以比较清晰理解-现在写的很乱" class="headerlink" title="先搭一个架子,后续纠正或者补充,争取自己看的时候可以比较清晰理解.现在写的很乱."></a>先搭一个架子,后续纠正或者补充,争取自己看的时候可以比较清晰理解.现在写的很乱.</h3>	  
+<h3 id="先搭一个架子-后续纠正或者补充-争取自己看的时候可以比较清晰理解-现在写的很乱"><a href="#先搭一个架子-后续纠正或者补充-争取自己看的时候可以比较清晰理解-现在写的很乱" class="headerlink" title="先搭一个架子,后续纠正或者补充,争取自己看的时候可以比较清晰理解.现在写的很乱."></a>先搭一个架子,后续纠正或者补充,争取自己看的时候可以比较清晰理解.现在写的很乱.</h3>
+      
+    </div>
 
-	  <div>
-  		<center>
-		  <div class="pagination">
-<ul class="pagination">
-	
-	
-	
-	
-	
-	
-		
-			
-		
-	
-		
-			
-			
-		
-	
-		
-	
-		
-	
-		
-	
-		
-	
-		
-	
-		
-	
-		
-	
-		
-	
-	
-	
-		<li class="prev"><a href="/2016/06/14/test/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
-	
-	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
-	
-		<li class="next disabled"><a>next<i class="fa fa-arrow-circle-o-right"></i></a></li>
-	
-</ul>
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/23/Vagrant开发环境部署/" rel="next" title="Vagrant开发环境部署">
+                <i class="fa fa-chevron-left"></i> Vagrant开发环境部署
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/06/14/test/" rel="prev" title="test">
+                test <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Huy" />
+          <p class="site-author-name" itemprop="name">Huy</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#关注PHP内核实现的原因"><span class="nav-number">1.</span> <span class="nav-text">关注PHP内核实现的原因</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#个人php方向的技能树"><span class="nav-number">2.</span> <span class="nav-text">个人php方向的技能树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#php方面的资料"><span class="nav-number">3.</span> <span class="nav-text">php方面的资料</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fastcgi模式php生命周期粗略分析"><span class="nav-number">4.</span> <span class="nav-text">fastcgi模式php生命周期粗略分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#sapi-fastcgi是主要用的一种-启动和初始化"><span class="nav-number">4.1.</span> <span class="nav-text">sapi(fastcgi是主要用的一种)启动和初始化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#web服务器-nginx-和fastcgi进行socket通信-按cgi协议发送cgi环境变量和标准输入stdin给cgi进程"><span class="nav-number">4.2.</span> <span class="nav-text">web服务器(nginx)和fastcgi进行socket通信,按cgi协议发送cgi环境变量和标准输入stdin给cgi进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cgi进程解析器进行处理并将标准输出stdout和错误输出stderr返回给nginx"><span class="nav-number">4.3.</span> <span class="nav-text">cgi进程解析器进行处理并将标准输出stdout和错误输出stderr返回给nginx</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cgi解析器结束当前socket连接-并等待下一个连接"><span class="nav-number">4.4.</span> <span class="nav-text">cgi解析器结束当前socket连接,并等待下一个连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#先搭一个架子-后续纠正或者补充-争取自己看的时候可以比较清晰理解-现在写的很乱"><span class="nav-number">5.</span> <span class="nav-text">先搭一个架子,后续纠正或者补充,争取自己看的时候可以比较清晰理解.现在写的很乱.</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huy</span>
 </div>
 
-		</center>
-	  </div>
-	  
-	</div> <!-- col-md-9/col-md-12 -->
-	
-  </div><!-- row -->
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
 
-	</div>
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
-  <div class="container-narrow">
-	<footer> <p>
-  &copy; 2016 Huy
+
   
-      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
-</p> </footer>
-  </div> <!-- container-narrow -->
-  
-<a id="gotop" href="#">   
-  <span>▲</span> 
-</a>
 
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/jquery.tableofcontents.min.js"></script>
-<script src="/js/tocgenerator.min.js"></script>
-<script src="/js/main.js"></script>
-
-
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
 <script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox();
-})(jQuery);
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
 </script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
 
 
 </body>

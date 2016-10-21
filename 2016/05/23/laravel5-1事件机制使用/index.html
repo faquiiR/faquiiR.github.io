@@ -1,66 +1,316 @@
-<!DOCTYPE HTML>
-<html>
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
   
-  <title>laravel5.1事件机制使用 | Huy&#39;s wiki</title>
-  <meta name="author" content="Huy">
   
-  <meta name="description" content="事件和队列的区别及关联
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="事件和队列的区别及关联
 事件 侧重主动触发一个行为，比如注册接口我们可以收集用户数据然后触发一个登录事件，这个事件可以有多个监听器，每个监听器都可以拿到事件的数据进行处理。这是一个典型的观察者模式。
-队列 侧重把想做的比较耗时的业务放在一个容器然后另一个程序一直消费，当然可以是同步处理也可以异步处理">
-  
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+队列 侧重把想做的比较耗时的业务放在一个容器然后另一个程序一直消费，当然可以是同步处理也可以异步处理。和事件的区别是，事件侧重只抛出一个事件（核心是数据）剩下的交给观察者们，队列是把想做的几件事都放到">
+<meta property="og:type" content="article">
+<meta property="og:title" content="laravel5.1事件机制使用">
+<meta property="og:url" content="http://ccxhuy.cn/2016/05/23/laravel5-1事件机制使用/index.html">
+<meta property="og:site_name" content="很多事还没做">
+<meta property="og:description" content="事件和队列的区别及关联
+事件 侧重主动触发一个行为，比如注册接口我们可以收集用户数据然后触发一个登录事件，这个事件可以有多个监听器，每个监听器都可以拿到事件的数据进行处理。这是一个典型的观察者模式。
+队列 侧重把想做的比较耗时的业务放在一个容器然后另一个程序一直消费，当然可以是同步处理也可以异步处理。和事件的区别是，事件侧重只抛出一个事件（核心是数据）剩下的交给观察者们，队列是把想做的几件事都放到">
+<meta property="og:image" content="http://static.zybuluo.com/hushaofei/8fk7xz3e8t73n6xuzl8lif7w/generate.png">
+<meta property="og:image" content="http://static.zybuluo.com/hushaofei/ij3kpq79xt18c29i5qhqzvjn/events.png">
+<meta property="og:image" content="http://static.zybuluo.com/hushaofei/gtdlcuy34rba40sqhqfi1t65/listeners.png">
+<meta property="og:image" content="http://static.zybuluo.com/hushaofei/gsn67p9ivlmd6b2j4fok1tz7/struct.png">
+<meta property="og:image" content="http://static.zybuluo.com/hushaofei/h3je0bpvp8edldo9f8yt28kl/redis.png">
+<meta property="og:updated_time" content="2016-06-14T15:02:41.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="laravel5.1事件机制使用">
+<meta name="twitter:description" content="事件和队列的区别及关联
+事件 侧重主动触发一个行为，比如注册接口我们可以收集用户数据然后触发一个登录事件，这个事件可以有多个监听器，每个监听器都可以拿到事件的数据进行处理。这是一个典型的观察者模式。
+队列 侧重把想做的比较耗时的业务放在一个容器然后另一个程序一直消费，当然可以是同步处理也可以异步处理。和事件的区别是，事件侧重只抛出一个事件（核心是数据）剩下的交给观察者们，队列是把想做的几件事都放到">
+<meta name="twitter:image" content="http://static.zybuluo.com/hushaofei/8fk7xz3e8t73n6xuzl8lif7w/generate.png">
 
-  <meta property="og:title" content="laravel5.1事件机制使用"/>
-  <meta property="og:site_name" content="Huy&#39;s wiki"/>
 
-  
-    <meta property="og:image" content="undefined"/>
-  
 
-  
-    <link rel="alternative" href="/atom.xml" title="Huy&#39;s wiki" type="application/atom+xml">
-  
-  
-    <link href="/favicon.png" rel="icon">
-  
-  
-  <link rel="stylesheet" href="/css/bootstrap.min.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/font-awesome.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/highlight.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/google-fonts.css" media="screen" type="text/css">
-  <link rel="stylesheet" href="/css/responsive.css" media="screen" type="text/css">  
-  <link rel="stylesheet" href="/css/sidenav.css" media="screen" type="text/css">  
-  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    }
+  };
+</script>
 
-  <script src="/js/jquery-2.0.3.min.js"></script>
 
-  <!-- analytics -->
-  
 
+
+  <link rel="canonical" href="http://ccxhuy.cn/2016/05/23/laravel5-1事件机制使用/"/>
+
+
+  <title> laravel5.1事件机制使用 | 很多事还没做 </title>
 </head>
 
-<body id="body" data-spy="scroll" data-target=".toc">
-  <div class="container" id="container">
-	<div class="content">
-	  <div class="page-header">		
-  <h1><a class="brand" href="/">Huy&#39;s wiki</a><span class="split"></span><span class="title">laravel5.1事件机制使用</span><span class="date" id="title-date"><i class="fa fa-clock-o"></i> 2016-05-23</span></h1>
-</div>		
+<body itemscope itemtype="//schema.org/WebPage" lang="">
 
-<div class="row page">
-  <!-- cols -->	
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">很多事还没做</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle"></p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
   
   
 
   
-	<div class="col-md-12">
-	  
+  
+  
 
-	  <!-- content -->
-	  <h3 id="事件和队列的区别及关联"><a href="#事件和队列的区别及关联" class="headerlink" title="事件和队列的区别及关联"></a>事件和队列的区别及关联</h3><blockquote>
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                laravel5.1事件机制使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">Posted on</span>
+            <time itemprop="dateCreated" datetime="2016-05-23T17:42:07+08:00" content="2016-05-23">
+              2016-05-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">In</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Laravel/" itemprop="url" rel="index">
+                    <span itemprop="name">Laravel</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="事件和队列的区别及关联"><a href="#事件和队列的区别及关联" class="headerlink" title="事件和队列的区别及关联"></a>事件和队列的区别及关联</h3><blockquote>
 <p><code>事件</code> 侧重主动触发一个行为，比如注册接口我们可以收集用户数据然后触发一个登录事件，这个事件可以有多个监听器，每个监听器都可以拿到事件的数据进行处理。这是一个典型的观察者模式。</p>
 <p><code>队列</code> 侧重把想做的比较耗时的业务放在一个容器然后另一个程序一直消费，当然可以是同步处理也可以异步处理。和事件的区别是，事件侧重只抛出一个事件（核心是数据）剩下的交给观察者们，队列是把想做的几件事都放到队列。队列是典型的生产者消费者模式，常见的有自定义队列，redis队列和kakfa。</p>
 </blockquote>
@@ -74,94 +324,279 @@
 <p>启用队列的处理（消费）进程。</p>
 <h3 id="队列中存放的数据结构"><a href="#队列中存放的数据结构" class="headerlink" title="队列中存放的数据结构"></a>队列中存放的数据结构</h3><p>mysql中jobs标的结构和数据如下<br><img src="http://static.zybuluo.com/hushaofei/gsn67p9ivlmd6b2j4fok1tz7/struct.png" alt="struct.png-91.8kB"><br>payload存的是序列化后的对象，如果是model只保存默认主键。</p>
 <p>redis中会有一个key<code>queue:default</code>，暂时看不到数据，以后有兴趣的单独找。<br><img src="http://static.zybuluo.com/hushaofei/h3je0bpvp8edldo9f8yt28kl/redis.png" alt="redis.png-13.8kB"></p>
-	  
 
-	  <div>
-  		<center>
-		  <div class="pagination">
-<ul class="pagination">
-	
-	
-	
-	
-	
-	
-		
-	
-		
-	
-		
-	
-		
-			
-		
-	
-		
-			
-			
-		
-	
-		
-	
-		
-	
-		
-			
-			
-			
-		
-	
-		
-	
-	
-	
-		<li class="prev"><a href="/2016/05/23/laravel5-1源码分析（上）/" class="alignleft prev"><i class="fa fa-arrow-circle-o-left"></i>prev</a></li>
-	
-	<li><a href="/"><i class="fa fa-archive"></i>Home</a></li>
-	
-		<li class="next"><a href="/2016/05/18/阿里云服务器laravel获取不到客户端真实ip的问题/" class="alignright next">next<i class="fa fa-arrow-circle-o-right"></i></a></li>
-	
-</ul>
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/18/使用apidocjs维护api文档/" rel="next" title="使用apidocjs维护api文档">
+                <i class="fa fa-chevron-left"></i> 使用apidocjs维护api文档
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/23/laravel5-1源码分析（上）/" rel="prev" title="laravel5.1源码分析（上）">
+                laravel5.1源码分析（上） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.gif"
+               alt="Huy" />
+          <p class="site-author-name" itemprop="name">Huy</p>
+          <p class="site-description motion-element" itemprop="description"></p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-name">posts</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#事件和队列的区别及关联"><span class="nav-number">1.</span> <span class="nav-text">事件和队列的区别及关联</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#la5-1使用队列"><span class="nav-number">2.</span> <span class="nav-text">la5.1使用队列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#自动生成事件和监听器"><span class="nav-number">2.1.</span> <span class="nav-text">自动生成事件和监听器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#队列中存放的数据结构"><span class="nav-number">3.</span> <span class="nav-text">队列中存放的数据结构</span></a></li></ol></div>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Huy</span>
 </div>
 
-		</center>
-	  </div>
-	  
-	</div> <!-- col-md-9/col-md-12 -->
-	
-  </div><!-- row -->
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
 
-	</div>
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
   </div>
-  <div class="container-narrow">
-	<footer> <p>
-  &copy; 2016 Huy
+
   
-      with help from <a href="http://zespia.tw/hexo/" target="_blank">Hexo</a> and <a href="http://getbootstrap.com/" target="_blank">Twitter Bootstrap</a>. Theme by <a href="http://github.com/wzpan/hexo-theme-wixo/">Wixo</a>.    
-</p> </footer>
-  </div> <!-- container-narrow -->
-  
-<a id="gotop" href="#">   
-  <span>▲</span> 
-</a>
 
-<script src="/js/jquery.imagesloaded.min.js"></script>
-<script src="/js/gallery.js"></script>
-<script src="/js/bootstrap.min.js"></script>
-<script src="/js/jquery.tableofcontents.min.js"></script>
-<script src="/js/tocgenerator.min.js"></script>
-<script src="/js/main.js"></script>
-
-
-
-
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
-<script src="/fancybox/jquery.fancybox.pack.js"></script>
 <script type="text/javascript">
-(function($){
-  $('.fancybox').fancybox();
-})(jQuery);
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
 </script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
 
 
 </body>
